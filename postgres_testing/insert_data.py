@@ -4,12 +4,12 @@ import psycopg2
 from config import config
  
  
-def insert_vendor(vendor_name):
+def insert_sensor(sensor_name, sensor_type):
     """ insert a new vendor into the vendors table """
-    sql = """INSERT INTO vendors(vendor_name)
-             VALUES(%s) RETURNING vendor_id;"""
+    sql = """INSERT INTO sensors(sensor_name, sensor_type)
+             VALUES(%s,%s) RETURNING sensor_id;"""
     conn = None
-    vendor_id = None
+    sensor_id = None
     try:
         # read database configuration
         params = config()
@@ -18,9 +18,9 @@ def insert_vendor(vendor_name):
         # create a new cursor
         cur = conn.cursor()
         # execute the INSERT statement
-        cur.execute(sql, (vendor_name,))
+        cur.execute(sql, (sensor_name, sensor_type))
         # get the generated id back
-        vendor_id = cur.fetchone()[0]
+        sensor_id = cur.fetchone()[0]
         # commit the changes to the database
         conn.commit()
         # close communication with the database
@@ -31,7 +31,7 @@ def insert_vendor(vendor_name):
         if conn is not None:
             conn.close()
  
-    return vendor_id
+    return sensor_id
 
 def insert_vendor_list(vendor_list):
     """ insert multiple vendors into the vendors table  """
@@ -57,14 +57,14 @@ def insert_vendor_list(vendor_list):
             conn.close()
 
 if __name__ == '__main__':
-    # insert one vendor
-    insert_vendor("3M Co.")
+    # insert one sensor
+    insert_sensor("VWP01", "Piezometer")
     # insert multiple vendors
-    insert_vendor_list([
-        ('AKM Semiconductor Inc.',),
-        ('Asahi Glass Co Ltd.',),
-        ('Daikin Industries Ltd.',),
-        ('Dynacast International Inc.',),
-        ('Foster Electric Co. Ltd.',),
-        ('Murata Manufacturing Co. Ltd.',)
-    ])            
+    # insert_sensor_list([
+    #     ('AKM Semiconductor Inc.',),
+    #     ('Asahi Glass Co Ltd.',),
+    #     ('Daikin Industries Ltd.',),
+    #     ('Dynacast International Inc.',),
+    #     ('Foster Electric Co. Ltd.',),
+    #     ('Murata Manufacturing Co. Ltd.',)
+    # ])            
