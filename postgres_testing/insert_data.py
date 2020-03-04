@@ -58,7 +58,7 @@ def insert_vendor_list(vendor_list):
 
 if __name__ == '__main__':
     # insert one sensor
-    insert_sensor("VWP01", "Piezometer")
+    insert_sensor("VWP02", "Piezometer")
     # insert multiple vendors
     # insert_sensor_list([
     #     ('AKM Semiconductor Inc.',),
