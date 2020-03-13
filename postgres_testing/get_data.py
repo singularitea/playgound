@@ -22,5 +22,25 @@ def get_sensors():
         if conn is not None:
             conn.close()
 
+def get_data():
+    """ query sensors from the sensors table """
+    conn = None
+    try:
+        params = config()
+        conn = psycopg2.connect(**params)
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM sensor_data ORDER BY time")
+        rows = cur.fetchall()
+        print("Data points: ", cur.rowcount)
+        for row in rows:
+            print(row)
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+
 if __name__ == '__main__':
     get_sensors()
+    get_data()

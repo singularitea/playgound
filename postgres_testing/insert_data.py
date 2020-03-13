@@ -2,6 +2,8 @@
  
 import psycopg2
 from config import config
+from generate_data import generate_data
+import time
  
  
 def insert_sensor(sensor_name, sensor_type):
@@ -33,9 +35,9 @@ def insert_sensor(sensor_name, sensor_type):
  
     return sensor_id
 
-def insert_vendor_list(vendor_list):
-    """ insert multiple vendors into the vendors table  """
-    sql = "INSERT INTO vendors(vendor_name) VALUES(%s)"
+def insert_sensor_data(data):
+    """ insert data into the sensor_data table  """
+    sql = "INSERT INTO sensor_data(time, sensor_id, data, metadata) VALUES(%s,%s,%s,%s)"
     conn = None
     try:
         # read database configuration
@@ -45,7 +47,7 @@ def insert_vendor_list(vendor_list):
         # create a new cursor
         cur = conn.cursor()
         # execute the INSERT statement
-        cur.executemany(sql,vendor_list)
+        cur.executemany(sql,data)
         # commit the changes to the database
         conn.commit()
         # close communication with the database
@@ -58,13 +60,26 @@ def insert_vendor_list(vendor_list):
 
 if __name__ == '__main__':
     # insert one sensor
-    insert_sensor("VWP02", "Piezometer")
-    # insert multiple vendors
-    # insert_sensor_list([
-    #     ('AKM Semiconductor Inc.',),
-    #     ('Asahi Glass Co Ltd.',),
-    #     ('Daikin Industries Ltd.',),
-    #     ('Dynacast International Inc.',),
-    #     ('Foster Electric Co. Ltd.',),
-    #     ('Murata Manufacturing Co. Ltd.',)
+    # insert_sensor("VWP02", "Piezometer")
+
+    # insert data
+    # time, sensor_id, data, metadata
+
+    reading_amount = 10000
+
+    sensor_id = 1
+    generated_data = []
+
+    for i in range(reading_amount, 1, -1):
+        generated_data.append(generate_data(sensor_id, 6449.1, 6450.7, i))
+
+
+    insert_sensor_data(generated_data)     
+
+    # insert_sensor_data([
+    #     ('2020-03-12 08:00:00', 1, 6453.2, "comment",),
+    #     ('2020-03-12 08:01:00', 1, 6453.4, "comment",),
+    #     ('2020-03-12 08:02:00', 1, 6453.6, "comment",),
+    #     ('2020-03-12 08:03:00', 1, 6453.3, "comment",),
+    #     ('2020-03-12 08:04:00', 1, 6453.9, "comment",)
     # ])            
